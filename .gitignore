@@ -1,0 +1,5 @@
+# Ignore Dataset
+dataset
+
+# Spare files
+*.ipynb
