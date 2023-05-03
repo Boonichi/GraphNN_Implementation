@@ -32,12 +32,29 @@ def main(args):
     np.random.seed(seed)
     
     # Load Dataset
+    dataset = torch.load(args.input_dir)[0]
+    # Load model
     if args.model == "GAT":
         model = GAT()
     
     model.to(device)
+    dataset.to(device)
+
+    criterion = torch.nn.NLLLoss()
     
-    
+    optimizer = torch.optim.AdamW(model.parameters, lr = 5e-3, weight_decay= 5e-4)
+
+    model.train()
+    for iter in args.iters:
+        optimizer.zero_grad()
+
+        output = model(dataset)
+        loss = criterion(output[dataset.train_mask], dataset[dataset.train_mask])
+        if iter % 100 == 0:
+            print(loss)
+        loss.backward()
+        optimizer.step()
+        
 
          
 if __name__ == "__main__":
